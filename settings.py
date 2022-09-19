@@ -6,8 +6,9 @@ class Settings:
         self.screen_height = 800
         self.bg_color = (230, 230, 230)
 
-        # 飞船的速度设置
+        # 飞船的设置
         self.ship_speed = 1.5
+        self.ship_limit = 3
 
         # 子弹设置
         self.bullet_speed = 1.0
@@ -16,7 +17,7 @@ class Settings:
         self.bullet_color = (60, 60, 60)
 
         # 外星人的设置
-        self.alien_speed = 0.5
+        self.alien_speed = 3.5
         self.fleet_drop_speed = 10
         # 1表示向左移动，-1表示向右移动
         self.fleet_direction = 1
