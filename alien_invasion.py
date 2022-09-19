@@ -14,12 +14,12 @@ class AlienInvasion:
         """初始化游戏并创建游戏资源"""
         pygame.init()
         self.settings = Settings()
-        # self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         # 这里修改游戏屏幕大小为整个屏幕
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # self.settings.screen_width = self.screen.get_width()
+        # self.settings.screen_height = self.screen.get_height()
         self.ship = Ship(self)
-        self.settings.screen_width = self.screen.get_width()
-        self.settings.screen_height = self.screen.get_height()
         # 创建存储子弹的编组
         self.bullets = pygame.sprite.Group()
 
@@ -35,6 +35,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update()
             self._update_bullet()
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -105,6 +106,21 @@ class AlienInvasion:
         # 计算外星人的纵坐标
         new_alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(new_alien)
+
+    def _update_aliens(self):
+        self._check_fleet_edges()
+        self.aliens.update()
+
+    def _check_fleet_edges(self):
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
 
     def _update_screen(self):
         """更新屏幕图像，并切换到到新屏幕"""
