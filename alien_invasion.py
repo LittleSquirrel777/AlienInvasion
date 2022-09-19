@@ -79,7 +79,31 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
 
     def _create_fleet(self):
+        """创建一群外星人"""
         new_alien = Alien(self)
+        alien_width = new_alien.rect.width
+        alien_height = new_alien.rect.height
+        # 计算一行能容纳多少外星人
+        available_space_x = self.settings.screen_width - 2 * alien_width
+        number_alien_x = available_space_x // (2 * alien_width)
+        # 计算屏幕能容纳多少行外星人
+        available_space_y = self.settings.screen_height - (3 * alien_height) - self.ship.rect.height
+        number_alien_y = available_space_y // (2 * alien_height)
+
+        # 外循环行数，内循环每行外星人
+        for row_number in range(number_alien_y):
+            for alien_number in range(number_alien_x):
+                self._create_alien(alien_number, row_number)
+
+    def _create_alien(self, alien_number, row_number):
+        """创建一个外星人"""
+        new_alien = Alien(self)
+        alien_width, alien_height = new_alien.rect.size
+        # 计算外星人的横坐标
+        new_alien.x = alien_width + 2 * alien_width * alien_number
+        new_alien.rect.x = new_alien.x
+        # 计算外星人的纵坐标
+        new_alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(new_alien)
 
     def _update_screen(self):
