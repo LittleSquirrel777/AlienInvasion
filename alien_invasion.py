@@ -7,6 +7,7 @@ from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_states import GameStates
+from button import Button
 
 
 class AlienInvasion:
@@ -29,6 +30,8 @@ class AlienInvasion:
         # 创建存储外星人的编组
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
+        # 创建一个按钮
+        self.play_button = Button(self, "Play")
 
     def run_game(self):
         """开始游戏的主循环"""
@@ -51,6 +54,9 @@ class AlienInvasion:
                 self._check_keyup_events(event)
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
 
     def _check_keydown_events(self, event):
         """响应按键"""
@@ -69,6 +75,21 @@ class AlienInvasion:
             self.ship.moving_left = False
         elif event.key == pygame.K_RIGHT:
             self.ship.moving_right = False
+
+    def _check_play_button(self, mouse_pos):
+        """玩家单机Play按钮开始新游戏"""
+        if self.play_button.rect.collidepoint(mouse_pos) and not self.states.game_active:
+            # 重置游戏状态
+            self.states.game_active = True
+            self.states.reset_states()
+            # 清空编组
+            self.bullets.empty()
+            self.aliens.empty()
+            # 重新生成外星人
+            self._create_fleet()
+            self.ship.center_ship()
+            # 隐藏光标
+            pygame.mouse.set_visible(False)
 
     def _fire_bullet(self):
         """发射子弹添加到编组中"""
@@ -149,6 +170,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.states.game_active = False
+            pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
         """检查是否有外星人到达了屏幕的下边界"""
@@ -179,6 +201,8 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.aliens.draw(self.screen)
+        if not self.states.game_active:
+            self.play_button.draw_button()
         pygame.display.flip()
 
 
