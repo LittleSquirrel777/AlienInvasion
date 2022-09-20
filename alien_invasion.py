@@ -90,6 +90,8 @@ class AlienInvasion:
             self.ship.center_ship()
             # 隐藏光标
             pygame.mouse.set_visible(False)
+            # 重新设置一部分游戏的状态
+            self.settings.initialize_dynamic_settings()
 
     def _fire_bullet(self):
         """发射子弹添加到编组中"""
@@ -113,6 +115,8 @@ class AlienInvasion:
         if not self.aliens:
             self.bullets.empty()
             self._create_fleet()
+            # 一群外星人消灭完，提高速度
+            self.settings.increase_speed()
 
     def _create_fleet(self):
         """创建一群外星人"""
